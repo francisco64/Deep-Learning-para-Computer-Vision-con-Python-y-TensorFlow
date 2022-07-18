@@ -1,0 +1,35 @@
+# Download Ngrok to tunnel the tensorboard port to an external port
+!wget https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-amd64.zip
+!unzip ngrok-stable-linux-amd64.zip
+
+# Run tensorboard as well as Ngrox (for tunneling as non-blocking processes)
+import os
+import multiprocessing
+
+
+pool = multiprocessing.Pool(processes = 10)
+results_of_processes = [pool.apply_async(os.system, args=(cmd, ), callback = None )
+                        for cmd in [
+                        f"tensorboard --logdir ./logs/ --host 0.0.0.0 --port 6006 &",
+                        "./ngrok authtoken 285s9wc55xTlRKZc2ryBmv0jhpx_5W3k4zwJrPTXA1CLTEGY3 &",
+                        "./ngrok http 6006 &"
+                        ]]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+! curl -s http://localhost:4040/api/tunnels | python3 -c \
+    "import sys, json; print(json.load(sys.stdin)['tunnels'][0]['public_url'])"
